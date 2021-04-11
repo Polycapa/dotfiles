@@ -1,5 +1,5 @@
 export ZSH=~/.oh-my-zsh
-export ZSH_THEME="powerlevel10k/powerlevel10k"
+export ZSH_THEME=""
 export EDITOR="code --wait"
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
@@ -123,5 +123,13 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 # Setup zsh-syntax-highlighting
 source $ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+TMOUT=1
+TRAPALRM() {
+    zle reset-prompt
+}
+
 # Start fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Start starship
+eval "$(starship init zsh)"

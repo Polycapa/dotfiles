@@ -1,0 +1,97 @@
+add_newline = true
+scan_timeout = 2
+
+format = """
+$username\
+$hostname\
+$shlvl\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$docker_context\
+$java\
+$nodejs\
+$env_var\
+$cmd_duration\
+$time\
+${custom.uiaas_cli}\
+${custom.angular_server}\
+$status\
+$line_break\
+$jobs\
+$battery\
+${custom.docker_containers}\ 
+$memory_usage\
+$line_break\
+$character"""
+
+[cmd_duration]
+min_time = 100
+
+[git_commit]
+tag_disabled = false
+
+[git_status]
+stashed = " ${count}"
+untracked = " ${count}"
+modified = " ${count}"
+staged = " ${count}"
+deleted = "✘ ${count}"
+conflicted = "ﲅ ${count}"
+renamed = "凜 ${count}"
+ahead = "⇡${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+behind = "⇣${count}"
+
+[jobs]
+threshold = 0
+
+[[battery.display]]
+threshold = 10
+style = "bold red"
+
+[[battery.display]]
+threshold = 50
+style = "bold yellow"
+
+
+[memory_usage]
+disabled = false
+threshold = -1
+symbol = ""
+format = "with $symbol [ram ${ram}( | swap ${swap})]($style)"
+
+[nodejs]
+format = "using [ $version](bold green) "
+
+[status]
+disabled = false
+format = "[$symbol]($style) "
+
+[time]
+disabled = false
+
+[custom.docker_containers]
+command = "~/dotfiles/starship/starship-docker.sh"
+when = "docker info"
+symbol = ""
+style = "bold fg:032"
+format="[$symbol Running ($output )]($style)"
+
+[custom.uiaas_cli]
+command = "uiaas --version"
+symbol = ""
+when = """ [[ "$PWD" =~ "uiaas" ]] """
+style = "bold dimmed white"
+format="using [$symbol uiaas cli (v$output )]($style)"
+
+[custom.angular_server]
+command = "echo 'server running'"
+when = '''
+curl -s --max-time 0,1 localhost:4200
+'''
+symbol = ""
+style = "bold green"
+format="with [$symbol ($output )]($style)"

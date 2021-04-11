@@ -320,6 +320,29 @@ install_git_config() {
   echo ""
 }
 
+install_starship() {
+  italic "Starship (https://starship.rs) installation"
+  printf "Installing starship..."
+  curl -fsSL https://starship.rs/install.sh | bash -s -- -y &>/dev/null
+
+  if [ $? -eq 0 ]; then
+    clearLine
+    logSuccess "Installed starship"
+  else
+    logError "Error when installing starship"
+  fi
+
+  printf "Setting starship configuration..."
+  mkdir -p ~/.config
+  if ln -sf $DIR/starship/starship.toml ~/.config/starship.toml &>/dev/null; then
+    clearLine
+    logSuccess "Configuration set up"
+  else
+    logError "Error when setting configuration"
+  fi
+  echo ""
+}
+
 backup_files() {
   italic "Backing up files in $OLD_DIR"
   printf "Creating backup folder %s..." $OLD_DIR
@@ -382,6 +405,7 @@ INSTALL_FZF=1
 INSTALL_N=1
 INSTALL_TERMINATOR=1
 INSTALL_GIT_CONFIG=1
+INSTALL_STARSHIP=1
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -425,6 +449,10 @@ while [[ $# -gt 0 ]]; do
     ;;
   --no-git-config)
     INSTALL_GIT_CONFIG=0
+    shift
+    ;;
+  --no-starship-shell)
+    INSTALL_STARSHIP=0
     shift
     ;;
   *)
@@ -473,6 +501,10 @@ fi
 
 if [ $INSTALL_TERMINATOR -eq 1 ]; then
   install_terminator
+fi
+
+if [ $INSTALL_STARSHIP -eq 1 ]; then
+  install_starship
 fi
 
 manual_todo
