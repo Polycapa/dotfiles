@@ -331,18 +331,102 @@ create_symlinks() {
   echo ""
 }
 
-cd $DIR || exit
+cd $DIR || exit 1
 
-backup_files
-create_symlinks
-install_zsh
-install_oh_my_zsh
-install_homebrew
-install_lsd
-install_nerd_fonts
-install_fzf
-install_n
-install_terminator
+SETUP_FILES=1
+INSTALL_ZSH=1
+INSTALL_OH_MY_ZSH=1
+INSTALL_HOMEBREW=1
+INSTALL_LSD=1
+INSTALL_NERD_FONTS=1
+INSTALL_FZF=1
+INSTALL_N=1
+INSTALL_TERMINATOR=1
+
+while [[ $# -gt 0 ]]; do
+  key="$1"
+
+  case $key in
+  --no-setup-files)
+    SETUP_FILES=0
+    shift
+    ;;
+  --no-zsh)
+    INSTALL_ZSH=0
+    shift
+    ;;
+  --no-oh-my-zsh)
+    INSTALL_OH_MY_ZSH=0
+    shift
+    ;;
+  --no-homebrew)
+    INSTALL_HOMEBREW=0
+    shift
+    ;;
+  --no-lsd)
+    INSTALL_LSD=0
+    shift
+    ;;
+  --no-nerd-fonts)
+    INSTALL_NERD_FONTS=0
+    shift
+    ;;
+  --no-fzf)
+    INSTALL_FZF=0
+    shift
+    ;;
+  --no-node)
+    INSTALL_N=0
+    shift
+    ;;
+  --no-terminator)
+    INSTALL_TERMINATOR=0
+    shift
+    ;;
+  *)
+    echo "Unknown arg $key"
+    shift # past argument
+    ;;
+  esac
+done
+
+if [ $SETUP_FILES -eq 1 ]; then
+  backup_files
+  create_symlinks
+fi
+
+if [ $INSTALL_ZSH -eq 1 ]; then
+  install_zsh
+fi
+
+if [ $INSTALL_OH_MY_ZSH -eq 1 ]; then
+  install_oh_my_zsh
+fi
+
+if [ $INSTALL_HOMEBREW -eq 1 ]; then
+  install_homebrew
+fi
+
+if [ $INSTALL_LSD -eq 1 ]; then
+  install_lsd
+fi
+
+if [ $INSTALL_NERD_FONTS -eq 1 ]; then
+  install_nerd_fonts
+fi
+
+if [ $INSTALL_FZF -eq 1 ]; then
+  install_fzf
+fi
+
+if [ $INSTALL_N -eq 1 ]; then
+  install_n
+fi
+
+if [ $INSTALL_TERMINATOR -eq 1 ]; then
+  install_terminator
+fi
+
 manual_todo
 
 logSuccess "Everything is done !"
