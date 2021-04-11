@@ -16,7 +16,7 @@ prompt_docker() {
   local DOCKER_BACKGROUND_COLOR="032"
   local DOCKER_FOREGROUND_COLOR="black"
 
-  if docker stats &> /dev/null; then
+  if docker info &> /dev/null; then
     local COUNT=0
     while read -r container
     do
