@@ -74,6 +74,7 @@ format = "[$symbol]($style) "
 disabled = false
 
 [custom.docker_containers]
+description = "Display list of running Docker containers"
 command = "~/dotfiles/starship/starship-docker.sh"
 when = "docker info"
 symbol = ""
@@ -81,6 +82,7 @@ style = "bold fg:032"
 format="[$symbol Running ($output )]($style)"
 
 [custom.uiaas_cli]
+description = "Display UIaaS CLI version"
 command = "uiaas --version"
 symbol = ""
 when = """ [[ "$PWD" =~ "uiaas" ]] """
@@ -88,6 +90,7 @@ style = "bold dimmed white"
 format="using [$symbol uiaas cli (v$output )]($style)"
 
 [custom.angular_server]
+description = "Display if Angular server is running on localhost 4200"
 command = "echo 'server running'"
 when = '''
 curl -s --max-time 0,1 localhost:4200
@@ -97,6 +100,7 @@ style = "bold green"
 format="with [$symbol ($output )]($style)"
 
 [custom.git_branch]
+description = "Output current branch name or pretty_current_branch output if it exists"
 command = "~/dotfiles/starship/starship-current-branch.sh"
 symbol = " "
 style = "bold purple"
