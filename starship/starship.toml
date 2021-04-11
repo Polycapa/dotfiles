@@ -87,7 +87,7 @@ shell = ["bash", "--noprofile", "--norc"]
 description = "Display UIaaS CLI version"
 command = "uiaas --version"
 symbol = ""
-when = """ [[ "$PWD" =~ "uiaas" ]] """
+when = """ [[ "$PWD" =~ "uiaas" ]] && which uiaas """
 style = "bold dimmed white"
 format="using [$symbol uiaas cli (v$output )]($style)"
 shell = ["bash", "--noprofile", "--norc"]
