@@ -63,9 +63,9 @@ install_zsh() {
     logWarning "zsh is already installed, doing nothing"
   fi
 
-  if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
+  if [[ ! $(echo $SHELL) =~ zsh ]]; then
     printf "Setting zsh as default shell..."
-    chsh -s "$(which zsh)"
+    sudo chsh -s "$(which zsh)"
     clearLine
     logSuccess "✔ zsh is set as default shell"
   else
