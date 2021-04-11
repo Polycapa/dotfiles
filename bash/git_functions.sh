@@ -11,11 +11,11 @@ alias git_clean="git reflog expire --expire=now --all && git gc --force --prune=
 # Add changes without whitespaces
 alias git_no_ws="git diff -U0 -w --no-color | git apply --cached --ignore-whitespace --unidiff-zero -"
 
-# Test conflict alias
-alias conflict="test_git_conflict"
-
 # Stash changes
 alias stash="git stash push -u -m "
+
+# Pop stashed changes
+alias pop="git stash pop --index"
 
 # Switch to latest branch
 alias g-="git switch -"
@@ -75,7 +75,7 @@ readInput() {
   fi
 }
 
-# Clean local branches
+# Clean local and remote branches
 git_delete_branches_before() {
   echo "Deleting local branches"
   git fetch -p
@@ -98,9 +98,101 @@ git_delete_branches_before() {
       fi
     fi
   done
+
+  printf "Delete remote branches ? "
+  read NEXT_STEP
+
+  if [ "$NEXT_STEP" = "y" ]; then
+    local REMOTE_TO_DELETE=()
+    # echo "Deleting remote branches"
+    for branch in $(git branch -r | sed 's/^\s*//' | sed 's/^remotes\///' | grep -v 'master$'); do
+      if [[ "$(git log --since "1 month ago" $branch | wc -l)" -eq 0 ]]; then
+        local_branch_name=$(echo "$branch" | sed 's|origin/||')
+        local TO_DELETE=0
+
+        for branch_to_check in $(git branch -r | grep -E ".*(develop|master).*" | grep -v HEAD | sed "s|^\s*||g"); do
+          local IS_MERGED=$(git branch -r --merged "$branch_to_check" | grep "$local_branch_name")
+          if [ -n "$IS_MERGED" ] && [ $TO_DELETE -eq 0 ]; then
+            local LAST_COMMIT_DATE=$(git log -1 --format="%cr" $branch)
+            echo "Deleting $local_branch_name, last commit was $LAST_COMMIT_DATE and branch has been merged in $branch_to_check"
+            TO_DELETE=1
+          fi
+        done
+
+        if [ $TO_DELETE -eq 1 ]; then
+          REMOTE_TO_DELETE+=("$local_branch_name")
+        fi
+      fi
+    done
+
+    if [ ${#REMOTE_TO_DELETE[@]} -gt 0 ]; then
+      git push --delete origin "${REMOTE_TO_DELETE[@]}"
+    fi
+  fi
 }
 
+# Clean local and remote branches, then clean repo
 git_full_clean() {
   git_delete_branches_before
   git_clean
+}
+
+# Reset current branch to remote
+git_reset_to_remote() {
+  git reset --hard "origin/$(git_current_branch)"
+}
+
+# Test git conflict
+conflict() {
+  getBranch() {
+    local BRANCH="$1"
+    git branch -r | grep "$BRANCH" | sed "s| ||g"
+  }
+
+  getLocalBranch() {
+    local BRANCH="$1"
+    git branch | grep "$BRANCH" | sed "s| ||g"
+  }
+
+  SOURCE='origin/'
+  TEST='origin/'
+  CURRENT=$(git rev-parse --abbrev-ref HEAD)
+
+  if [ $# -eq "0" ]; then
+    echo 'Needs 1 or 2 arguments, branch to test within or source branch and branch to test within'
+    exit 1
+  elif [ $# -eq "1" ]; then
+    TEST=$(getBranch "$1")
+  elif [ $# -eq "2" ]; then
+    SOURCE=$(getLocalBranch "$1")
+    TEST=$(getBranch "$2")
+  fi
+
+  STASH=$(git stash push -u)
+
+  if [ "${SOURCE}" == 'origin/' ]; then
+    echo "Testing ${TEST} to merge into ${CURRENT}"
+    git switch -d &>/dev/null
+  else
+    echo "Testing ${TEST} to merge into ${SOURCE}"
+    git switch -d ${SOURCE} &>/dev/null
+  fi
+
+  MERGE=$(git merge -Xignore-space-at-eol -Xignore-cr-at-eol --no-ff -m "DO NOT PUSH THIS MERGE" "${TEST}")
+
+  if [ $? -eq "0" ]; then
+    echo 'No conflict detected, switching back to your current branch'
+  else
+    echo "${MERGE}" | grep CONFLICT
+    echo 'Press enter to continue...'
+    read
+    git merge --abort &>/dev/null
+    echo 'Switching back to your current branch'
+  fi
+
+  git switch - &>/dev/null
+
+  if [ "${STASH}" != 'No changes to save' ]; then
+    git stash pop &>/dev/null
+  fi
 }
