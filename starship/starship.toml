@@ -6,7 +6,7 @@ $username\
 $hostname\
 $shlvl\
 $directory\
-$git_branch\
+${custom.git_branch}\
 $git_commit\
 $git_state\
 $git_status\
@@ -95,3 +95,11 @@ curl -s --max-time 0,1 localhost:4200
 symbol = ""
 style = "bold green"
 format="with [$symbol ($output )]($style)"
+
+[custom.git_branch]
+command = "~/dotfiles/starship/starship-current-branch.sh"
+symbol = " "
+style = "bold purple"
+when = """ [[ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" != "HEAD" ]] """
+format = "on [$symbol$output]($style) "
+shell = "zsh"
