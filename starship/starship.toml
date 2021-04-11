@@ -6,6 +6,7 @@ $username\
 $hostname\
 $shlvl\
 $directory\
+${custom.git_remote}\
 ${custom.git_branch}\
 $git_commit\
 $git_state\
@@ -80,6 +81,7 @@ when = "docker info"
 symbol = ""
 style = "bold fg:032"
 format="[$symbol Running ($output )]($style)"
+shell = ["bash", "--noprofile", "--norc"]
 
 [custom.uiaas_cli]
 description = "Display UIaaS CLI version"
@@ -88,6 +90,7 @@ symbol = ""
 when = """ [[ "$PWD" =~ "uiaas" ]] """
 style = "bold dimmed white"
 format="using [$symbol uiaas cli (v$output )]($style)"
+shell = ["bash", "--noprofile", "--norc"]
 
 [custom.angular_server]
 description = "Display if Angular server is running on localhost 4200"
@@ -98,6 +101,7 @@ curl -s --max-time 0,1 localhost:4200
 symbol = ""
 style = "bold green"
 format="with [$symbol ($output )]($style)"
+shell = ["bash", "--noprofile", "--norc"]
 
 [custom.git_branch]
 description = "Output current branch name or pretty_current_branch output if it exists"
@@ -106,4 +110,26 @@ symbol = " "
 style = "bold purple"
 when = """ [[ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" != "HEAD" ]] """
 format = "on [$symbol$output]($style) "
-shell = "zsh"
+shell = ["bash", "--noprofile", "--norc"]
+
+[custom.git_remote]
+# disabled = true
+description = "Display symbol for remote Git server"
+command = """
+GIT_REMOTE=$(command git ls-remote --get-url 2>/dev/null)
+if [[ "$GIT_REMOTE" =~ "github" ]]; then
+  GIT_REMOTE_SYMBOL=""
+elif [[ "$GIT_REMOTE" =~ "gitlab" ]]; then
+  GIT_REMOTE_SYMBOL=""
+elif [[ "$GIT_REMOTE" =~ "bitbucket" ]]; then
+  GIT_REMOTE_SYMBOL=""
+elif [[ "$GIT_REMOTE" =~ "git" ]]; then
+  GIT_REMOTE_SYMBOL=""
+else
+  GIT_REMOTE_SYMBOL=""
+fi
+echo "$GIT_REMOTE_SYMBOL"
+"""
+when = 'git rev-parse --is-inside-work-tree 2> /dev/null'
+shell = ["bash", "--noprofile", "--norc"]
+format = "at $output "
