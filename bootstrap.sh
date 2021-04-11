@@ -2,7 +2,7 @@
 
 DIR=~/dotfiles
 OLD_DIR=~/dotfiles_old
-files="bashrc zshrc oh-my-zsh gitconfig"
+files="bashrc zshrc oh-my-zsh"
 
 ansi() { printf "\e[${1}m%s\e[0m\n" "$2"; }
 bold() { ansi 1 "$1"; }
@@ -64,7 +64,9 @@ install_zsh() {
   fi
 
   if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
+    printf "Setting zsh as default shell..."
     chsh -s "$(which zsh)"
+    clearLine
     logSuccess "✔ zsh is set as default shell"
   else
     logWarning "zsh is already set as default shell"
@@ -270,15 +272,52 @@ install_terminator() {
       printf "Installing Terminator..."
       sudo apt-get install terminator &>/dev/null
       logInstallStatus "$?" "Terminator" "installed"
-
-      printf "Setting config"
-      ln -s $DIR/terminator/config ~/.config/terminator/config
-      logInstallStatus "$?" "Terminator config" "installed"
     else
       logWarning "Terminator is already installed"
     fi
+
+    printf "Setting config"
+    ln -sf $DIR/terminator/config ~/.config/terminator/config &>/dev/null
+    logInstallStatus "$?" "Terminator config" "installed"
     echo ""
   fi
+}
+
+install_git_config() {
+  italic "Git config setup"
+
+  printf "Setting git core.editor"
+  if ! sudo git config --system core.editor "code --wait"; then
+    logError "Error setting git config core.editor"
+  else
+    clearLine
+    logSuccess "Set up git config core.editor"
+  fi
+
+  printf "Setting git diff.tool"
+  if ! sudo git config --system diff.tool "code --wait --diff $LOCAL $REMOTE"; then
+    logError "Error setting git config diff.tool"
+  else
+    clearLine
+    logSuccess "Set up git config diff.tool"
+  fi
+
+  printf "Setting git alias.f"
+  if ! sudo git config --system alias.f "git fetch -p"; then
+    logError "Error setting git config alias.f"
+  else
+    clearLine
+    logSuccess "Set up git config alias.f"
+  fi
+
+  printf "Setting git credential.helper"
+  if ! sudo git config --system credential.helper "store --file ~/.git-credentials"; then
+    logError "Error setting git config credential.helper"
+  else
+    clearLine
+    logSuccess "Set up git config credential.helper"
+  fi
+  echo ""
 }
 
 backup_files() {
@@ -342,6 +381,7 @@ INSTALL_NERD_FONTS=1
 INSTALL_FZF=1
 INSTALL_N=1
 INSTALL_TERMINATOR=1
+INSTALL_GIT_CONFIG=1
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -383,6 +423,10 @@ while [[ $# -gt 0 ]]; do
     INSTALL_TERMINATOR=0
     shift
     ;;
+  --no-git-config)
+    INSTALL_GIT_CONFIG=0
+    shift
+    ;;
   *)
     echo "Unknown arg $key"
     shift # past argument
@@ -393,6 +437,10 @@ done
 if [ $SETUP_FILES -eq 1 ]; then
   backup_files
   create_symlinks
+fi
+
+if [ $INSTALL_GIT_CONFIG -eq 1 ]; then
+  install_git_config
 fi
 
 if [ $INSTALL_ZSH -eq 1 ]; then
