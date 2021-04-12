@@ -108,7 +108,7 @@ description = "Output current branch name or pretty_current_branch output if it 
 command = "~/dotfiles/starship/starship-current-branch.sh"
 symbol = " "
 style = "bold purple"
-when = """ [[ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" != "HEAD" ]] """
+when = """ git rev-parse --is-inside-work-tree 2> /dev/null && [[ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" != "HEAD" ]] """
 format = "on [$symbol$output]($style) "
 shell = ["bash", "--noprofile", "--norc"]
 
