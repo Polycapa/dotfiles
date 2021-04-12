@@ -75,6 +75,7 @@ format = "[$symbol]($style) "
 [time]
 disabled = false
 format = "[$time]($style) "
+time_format = "%R"
 
 [custom.docker_containers]
 description = "Display list of running Docker containers"
