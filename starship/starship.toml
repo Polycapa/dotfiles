@@ -25,6 +25,7 @@ $battery\
 ${custom.docker_containers}\ 
 $memory_usage\
 $line_break\
+${custom.last_commit}\
 $time\
 ${custom.sudo}\
 $character"""
@@ -153,3 +154,11 @@ command = "echo"
 symbol = " "
 style = "red"
 when = "sudo -vn &>/dev/null"
+
+[custom.last_commit]
+description = "Display last commit"
+command = "git log -1 --format=\"%h \"%s\" (%ar)\""
+symbol = ""
+style = "bright-yellow bold"
+when = "git rev-parse --is-inside-work-tree 2> /dev/null"
+format = "[$symbol $output]($style)\n"
