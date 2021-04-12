@@ -270,6 +270,8 @@ install_terminator() {
     italic "Terminator installation"
     if ! which terminator &>/dev/null; then
       printf "Installing Terminator..."
+      sudo add-apt-repository ppa:mattrose/terminator -y &>/dev/null
+      sudo apt-get update -y &>/dev/null
       sudo apt-get install terminator &>/dev/null
       logInstallStatus "$?" "Terminator" "installed"
     else
