@@ -15,10 +15,9 @@ $docker_context\
 $java\
 $nodejs\
 $env_var\
-$cmd_duration\
-$time\
 ${custom.uiaas_cli}\
 ${custom.angular_server}\
+$cmd_duration\
 $status\
 $line_break\
 $jobs\
@@ -26,6 +25,7 @@ $battery\
 ${custom.docker_containers}\ 
 $memory_usage\
 $line_break\
+$time\
 $character"""
 
 [cmd_duration]
@@ -73,6 +73,7 @@ format = "[$symbol]($style) "
 
 [time]
 disabled = false
+format = "[$time]($style) "
 
 [custom.docker_containers]
 description = "Display list of running Docker containers"
