@@ -26,6 +26,7 @@ ${custom.docker_containers}\
 $memory_usage\
 $line_break\
 $time\
+${custom.sudo}\
 $character"""
 
 [cmd_duration]
@@ -145,3 +146,10 @@ files = ["package.json"]
 directories = ["node_modules"]
 format = "using [$symbol $output]($style) "
 shell = ["bash", "--noprofile", "--norc"]
+
+[custom.sudo]
+description = "Display cog if user still have sudo timestamp"
+command = "echo"
+symbol = " "
+style = "red"
+when = "sudo -vn &>/dev/null"
