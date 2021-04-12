@@ -12,9 +12,8 @@ $git_commit\
 $git_state\
 $git_status\
 $docker_context\
-$java\
 $nodejs\
-${custom.npm}
+${custom.npm}\
 $env_var\
 ${custom.uiaas_cli}\
 ${custom.angular_server}\
