@@ -14,6 +14,7 @@ $git_status\
 $docker_context\
 $java\
 $nodejs\
+${custom.npm}
 $env_var\
 ${custom.uiaas_cli}\
 ${custom.angular_server}\
@@ -134,3 +135,13 @@ echo "$GIT_REMOTE_SYMBOL"
 when = 'git rev-parse --is-inside-work-tree 2> /dev/null'
 shell = ["bash", "--noprofile", "--norc"]
 format = "at $output "
+
+[custom.npm]
+description = "Display npm version"
+command = "npm --version"
+symbol = ""
+style = "bold green"
+files = ["package.json"]
+directories = ["node_modules"]
+format = "using [$symbol $output]($style) "
+shell = ["bash", "--noprofile", "--norc"]
