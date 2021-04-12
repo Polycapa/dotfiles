@@ -305,7 +305,7 @@ install_git_config() {
   fi
 
   printf "Setting git alias.f"
-  if ! sudo git config --system alias.f "git fetch -p"; then
+  if ! sudo git config --system alias.f "fetch -p -P -t"; then
     logError "Error setting git config alias.f"
   else
     clearLine
