@@ -162,3 +162,6 @@ symbol = ""
 style = "bright-yellow bold"
 when = "git rev-parse --is-inside-work-tree 2> /dev/null"
 format = "[$symbol $output]($style)\n"
+
+[directory]
+home_symbol = ""
