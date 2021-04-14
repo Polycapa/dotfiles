@@ -23,6 +23,7 @@ $line_break\
 $jobs\
 $battery\
 ${custom.docker_containers}\ 
+${custom.idms_token}
 $memory_usage\
 $line_break\
 ${custom.last_commit}\
@@ -165,3 +166,17 @@ format = "[$symbol $output]($style)\n"
 
 [directory]
 home_symbol = ""
+
+[custom.idms_token]
+description = "Display IDMS token user generating"
+command = """ 
+  USER=$(ps -eo cmd | grep "uiaas it" | grep -v grep | grep -EiEio '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}')
+  echo "$USER"
+"""
+when = """
+  USER=$(ps -eo cmd | grep "uiaas it" | grep -v grep | grep -EiEio '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}')
+  test -n "$USER"
+"""
+symbol = ""
+style = "bold bright-red"
+format = "using [$symbol $output]($style) "
