@@ -27,6 +27,7 @@ ${custom.idms_token}
 $memory_usage\
 $line_break\
 ${custom.last_commit}\
+${custom.commit_build}\
 $time\
 ${custom.sudo}\
 $character"""
@@ -117,6 +118,23 @@ when = """ git rev-parse --is-inside-work-tree 2> /dev/null && [[ "$(git rev-par
 format = "on [$symbol$output]($style) "
 shell = ["bash", "--noprofile", "--norc"]
 
+[custom.commit_build]
+description = "Output current branch name or pretty_current_branch output if it exists"
+command = "~/dotfiles/starship/starship-commit-build.sh"
+symbol = ""
+style = ""
+when = """ git rev-parse --is-inside-work-tree 2> /dev/null && [[ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" != "HEAD" ]] """
+format = "build $symbol$output\n"
+shell = ["bash", "--noprofile", "--norc"]
+
+[custom.last_commit]
+description = "Display last commit"
+command = "git log -1 --format=\"%h \"%s\" (%cr)\""
+symbol = ""
+style = "bright-yellow bold"
+when = "git rev-parse --is-inside-work-tree 2> /dev/null"
+format = "[$symbol $output]($style) "
+
 [custom.git_remote]
 # disabled = true
 description = "Display symbol for remote Git server"
@@ -156,13 +174,6 @@ symbol = " "
 style = "red"
 when = "sudo -vn &>/dev/null"
 
-[custom.last_commit]
-description = "Display last commit"
-command = "git log -1 --format=\"%h \"%s\" (%cr)\""
-symbol = ""
-style = "bright-yellow bold"
-when = "git rev-parse --is-inside-work-tree 2> /dev/null"
-format = "[$symbol $output]($style)\n"
 
 [directory]
 home_symbol = ""
