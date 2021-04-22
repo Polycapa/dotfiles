@@ -23,11 +23,12 @@ $line_break\
 $jobs\
 $battery\
 ${custom.docker_containers}\ 
-${custom.idms_token}
 $memory_usage\
+${custom.idms_token}\
 $line_break\
 ${custom.last_commit}\
 ${custom.commit_build}\
+${custom.git_line_break}\
 $time\
 ${custom.sudo}\
 $character"""
@@ -123,8 +124,13 @@ description = "Output current branch name or pretty_current_branch output if it 
 command = "~/dotfiles/starship/starship-commit-build.sh"
 symbol = ""
 style = ""
-when = """ git rev-parse --is-inside-work-tree 2> /dev/null && [[ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" != "HEAD" ]] """
-format = "build $symbol$output\n"
+when = """ 
+  git rev-parse --is-inside-work-tree 2> /dev/null
+  [[ "$(git rev-parse --abbrev-ref --symbolic-full-name HEAD)" != "HEAD" ]]
+  OUTPUT=$(~/dotfiles/starship/starship-commit-build.sh)
+  test -n "$OUTPUT"
+"""
+format = "build $symbol$output"
 shell = ["bash", "--noprofile", "--norc"]
 
 [custom.last_commit]
@@ -134,6 +140,11 @@ symbol = ""
 style = "bright-yellow bold"
 when = "git rev-parse --is-inside-work-tree 2> /dev/null"
 format = "[$symbol $output]($style) "
+
+[custom.git_line_break]
+description = "Display line break if in git repo"
+when = "git rev-parse --is-inside-work-tree 2> /dev/null"
+format = "\n"
 
 [custom.git_remote]
 # disabled = true
@@ -182,7 +193,7 @@ home_symbol = ""
 description = "Display IDMS token user generating"
 command = """ 
   USER=$(ps -eo cmd | grep "uiaas it" | grep -v grep | grep -EiEio '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}')
-  echo "$USER"
+  printf "$USER" | sed 's/ *$//g'
 """
 when = """
   USER=$(ps -eo cmd | grep "uiaas it" | grep -v grep | grep -EiEio '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}')
@@ -190,4 +201,4 @@ when = """
 """
 symbol = ""
 style = "bold bright-red"
-format = "using [$symbol $output]($style) "
+format = " using [$symbol $output]($style)"
