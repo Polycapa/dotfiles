@@ -112,10 +112,17 @@ git_delete_branches_before() {
 
         for branch_to_check in $(git branch -r | grep -E ".*(develop|master).*" | grep -v HEAD | sed "s|^\s*||g"); do
           local IS_MERGED=$(git branch -r --merged "$branch_to_check" | grep "$local_branch_name")
-          if [ -n "$IS_MERGED" ] && [ $TO_DELETE -eq 0 ]; then
+          local BRANCH_TIME_THRESHOLD="2 months ago"
+          local NO_COMMIT_SINCE_LONG_TIME=$(git log --since "$BRANCH_TIME_THRESHOLD" "$branch" | wc -l)
+          if [ $TO_DELETE -eq 0 ]; then
             local LAST_COMMIT_DATE=$(git log -1 --format="%cr" $branch)
-            echo "Deleting $local_branch_name, last commit was $LAST_COMMIT_DATE and branch has been merged in $branch_to_check"
-            TO_DELETE=1
+            if [ -n "$IS_MERGED" ]; then
+              echo "Deleting $local_branch_name, last commit was $LAST_COMMIT_DATE and branch has been merged in $branch_to_check"
+              TO_DELETE=1
+            elif [ $NO_COMMIT_SINCE_LONG_TIME -eq 0 ]; then
+              echo "Deleting $local_branch_name, no changes since $BRANCH_TIME_THRESHOLD and last commit was $LAST_COMMIT_DATE"
+              TO_DELETE=1
+            fi
           fi
         done
 
