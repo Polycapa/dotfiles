@@ -319,6 +319,14 @@ install_git_config() {
     clearLine
     logSuccess "Set up git config credential.helper"
   fi
+
+  printf "Setting git pull.rebase"
+  if ! sudo git config --system pull.rebase "merges"; then
+    logError "Error setting git config pull.rebaser"
+  else
+    clearLine
+    logSuccess "Set up git config pull.rebase"
+  fi
   echo ""
 }
 
