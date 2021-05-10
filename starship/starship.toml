@@ -135,7 +135,7 @@ shell = ["bash", "--noprofile", "--norc"]
 
 [custom.last_commit]
 description = "Display last commit"
-command = "git log -1 --format=\"%h \"%s\" (%cr)\""
+command = "LANG=en_US git log -1 --format=\"%h \"%s\" (%cr)\""
 symbol = ""
 style = "bright-yellow bold"
 when = "git rev-parse --is-inside-work-tree 2> /dev/null"
