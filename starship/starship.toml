@@ -14,7 +14,6 @@ $git_status\
 $docker_context\
 $nodejs\
 ${custom.npm}\
-$env_var\
 ${custom.uiaas_cli}\
 ${custom.angular_server}\
 $cmd_duration\
@@ -170,7 +169,7 @@ format = "at $output "
 
 [custom.npm]
 description = "Display npm version"
-command = "npm --version"
+command = """ npm --version | tr --delete "\n" """
 symbol = ""
 style = "bold green"
 files = ["package.json"]
