@@ -177,7 +177,7 @@ conflict() {
 
   STASH=$(git stash push -u)
 
-  if [ "${SOURCE}" == 'origin/' ]; then
+  if [ "${SOURCE}" = 'origin/' ]; then
     echo "Testing ${TEST} to merge into ${CURRENT}"
     git switch -d &>/dev/null
   else
