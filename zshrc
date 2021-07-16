@@ -91,19 +91,6 @@ plugins=(
   zsh-syntax-highlighting
 )
 
-# Source bash scripts from dotfiles
-for script in ~/dotfiles/bash/*.sh; do
-  if ! echo "$script" | grep -q "sources.sh"; then
-    source "$script"
-  fi
-done
-
-
-# Source private config
-if [ -f ~/.private ]; then
-  source ~/.private
-fi
-
 # Start Oh-My-Zsh
 source $ZSH/oh-my-zsh.sh
 
@@ -133,3 +120,16 @@ TRAPALRM(){
 
 # Start starship
 eval "$(starship init zsh)"
+
+# Source bash scripts from dotfiles
+for script in ~/dotfiles/bash/*.sh; do
+  if ! echo "$script" | grep -q "sources.sh"; then
+    source "$script"
+  fi
+done
+
+
+# Source private config
+if [ -f ~/.private ]; then
+  source ~/.private
+fi
